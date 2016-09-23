@@ -5,35 +5,36 @@ import pytest
 def test_fixture_reordering(testdir):
     '''See that pytest reorders tests based on fixtures in the way we expect'''
 
-    True and testdir.makepyfile('''
+    src = '''
     import pytest
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope='module')
     def sf():
-        pass
+        print('sf {')
+        yield
+        print('sf }')
     
     class TestCls(object):
         def test1():
-            pass
+            print(1)
         def test2(sf):
-            pass
+            print(2)
         def test3():
-            pass
+            print(3)
     
-    def test_fn1(sf):
-        pass
+    def test_fn4(sf):
+        print(4)
         
-    def test_fn2():
-        pass
-    ''')
+    def test_fn5():
+        print(5)
+        assert False
+    '''
 
-    False and testdir.makepyfile('''
-    def test_fn1():
-        pass
-    ''')
-
-    items = testdir.genitems([testdir.getpathnode('.')])
+    items = testdir.getitems(src)
     print('!!!!', items)
+
+    result = testdir.runpytest('-v')
+    print(result)
     assert False
 
 

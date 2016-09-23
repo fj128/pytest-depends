@@ -15,7 +15,7 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(session, config, items):
-    pass
+    print('????')
 
 def pytest_addoption(parser):
     group = parser.getgroup('depends')
